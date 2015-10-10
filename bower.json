@@ -1,0 +1,24 @@
+{
+  "name": "Chat-App",
+  "main": "index.js",
+  "version": "1.0.0",
+  "authors": [
+    "Terry <tchan247@gmail.com>"
+  ],
+  "description": "Very cool chat app",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "client/bower_components",
+    "test",
+    "tests",
+    "spec"
+  ],
+  "dependencies": {
+    "angular": "~1.4.7"
+  }
+}

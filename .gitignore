@@ -1,0 +1,12 @@
+### OSX ###
+**/.DS_Store
+
+### NPM ###
+node_modules
+npm-debug.log
+
+### Client ###
+client/bower_components
+client/bundle
+
+### API Keys ###
