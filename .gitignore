@@ -10,3 +10,8 @@ client/bower_components
 client/bundle
 
 ### API Keys ###
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
