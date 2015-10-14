@@ -20,12 +20,14 @@ var commands = {
   '/quit': function(user) {
     var socket = user.socket;
     socket.write(protocol.sData);
+
+    if(user.loggedIn) {
+      users[user.username].loggedIn = false;
+    }
+    
     socket.write('BYE\n\n', function(){
       socket.end();
     });
-    if(user.loggedIn) {
-      // userCount--;
-    }
   }
 };
 

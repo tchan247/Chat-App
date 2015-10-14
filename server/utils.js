@@ -13,16 +13,17 @@ utils.login = function(user, input) {
       var input = utils.getInput(data).toLowerCase();
       
       if(input === 'y') {
-        socket.write('Please enter a name: \n');
+        socket.write(protocol.sData + 'Please enter a name: \n');
         socket.once('data', function(data) {
           var input2 = utils.getInput(data);
           console.log(input2);
-          socket.write('User succesful created!\n');
+          socket.write(protocol.sData + 'User succesful created!\n');
           users[input2] = {username: input2, loggedIn: true, socket: socket};
           user = users[input2];
-          // userCount++;
+          socket.write(protocol.cData);
         });
       }
+      socket.write(protocol.cData);
       console.log('y/n');
     });
 
@@ -30,8 +31,8 @@ utils.login = function(user, input) {
     socket.write('Succesful login!\n');
     users[input] = {username: input, loggedIn: true, socket: socket};
     user = users[input];
-    // userCount++;
   }
+  return user;
 };
 
 utils.getInput = function(data) {
@@ -43,6 +44,19 @@ utils.getInput = function(data) {
 
 utils.postMessage = function() {
   console.log('something');
+};
+
+utils.userCount = function() {
+  var count = {offline: 0, online: 0};
+  for(var user in users) {
+    if(users[user].loggedIn) {
+      count.online++;
+    } else {
+      count.offline++;
+    }
+  }
+
+  return count;
 };
 
 module.exports = utils;

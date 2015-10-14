@@ -7,6 +7,7 @@ var net = require('net');
 var protocol = require('./server/protocol');
 var utils = require('./server/utils');
 var commands = require('./server/commands');
+var users = require('./server/db/user/user');
 
 
 /**
@@ -28,7 +29,6 @@ app.listen(PORT, function(){
 var PORT2 = 3001;
 
 // Temporary implementation of data storage
-var userCount = 0;
 var rooms = [];
 var messages = [];
 
@@ -53,13 +53,13 @@ conn.on('connection', function(socket){
     if(user.loggedIn) {
       utils.postMessage(input);
     } else {
-      utils.login(user, input);
+      user = utils.login(user, input);
     }
     socket.write(protocol.cData);
   });
 
   socket.write(protocol.sData + 'Welcome to the GungHo test chat server\n');
-  socket.write(protocol.sData + 'currently ' + userCount + (userCount === 1? ' user' : ' users') + ' online\n');
+  socket.write(protocol.sData + 'currently ' + utils.userCount().online + ' user(s) online\n');
   socket.write(protocol.sData + 'Login Name?\n');
   socket.write(protocol.cData);
   console.log('Connection :: ready');
