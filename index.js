@@ -1,102 +1,79 @@
-// var express = require('express');
-// var io = require('socket.io');
+var express = require('express');
+var io = require('socket.io');
 
-// var app = express();
-var port = process.env.PORT || 3000;
+var net = require('net');
 
-// app.use(express.static(__dirname + '/client'));
+var app = express();
+var PORT = process.env.PORT || 3000;
 
-// app.listen(port, function(){
-//   console.log('listening to port: ' + port);
-// });
+app.use(express.static(__dirname + '/client'));
 
-/**
-*  Telnet Module
-*/
-
-var telnet = require('telnet');
-
-telnet.createServer(function (client) {
-
-  // make unicode characters work properly
-  client.do.transmit_binary();
-
-  // make the client emit 'window size' events
-  client.do.window_size();
-
-  // listen for the window size events from the client
-  client.on('window size', function (e) {
-    if (e.command === 'sb') {
-      console.log('telnet window resized to %d x %d', e.width, e.height);
-    }
-  });
-
-  // listen for the actual data from the client
-  client.on('data', function (b) {
-    client.write(b);
-  });
-
-  client.write('\nConnected to Telnet server!\n');
-
-}).listen(port);
-
-/*
-* HTTP test
-*/
-
-// var http = require('http');
-// var conn = http.createServer(function(req, res) {
-
-//   req.on('data', function(data){
-//     console.log(data);
-//   });
-
-//   res.on('data', function(data) {
-//     console.log(data);
-//   });
-
-//   res.write('Welcome to the GungHo test chat server');
-//   res.end();
-// }).listen(port, function(){
-//   console.log('listening to port: ' + port);
-// });
-
-// conn.on('data', function(data){
-//   console.log(data);
-// });
-
-
-
+app.listen(PORT, function(){
+  console.log('listening to port: ' + PORT);
+});
 
 /**
 * TCP
 */
+var users = [];
+var rooms = [];
 
-// var net = require('net');
-// var conn = net.createServer(function(socket) {
-//   var sData = '<= ';
-//   var cData = '=> ';
+var conn = net.createServer(function(){
+  
+}).listen(3001);
 
-//   socket.on('data', function(data) {
-//     input = '' + data;
+conn.on('connection', function(socket){
+  var user = {};
+  var sData = '\r<= ';
+  var cData = '\r=> ';
+  var loginStatus = false;
+  var commands = {
+    '/quit': function() {
+      socket.end('end');
+    }
+  };
+  var login = function(input) {
+    socket.write(sData);
+    if(input) {
+      socket.write('Invalid login name - Please enter a login name\n');
+    } else {
+      socket.write('Login Name?\n');
+    }
+  };
+  var postMessage = function(input) {
 
-//     if(input.indexOf('\n'))
-//     socket.write('=> ' + input);
+    if(input.indexOf('/quit') > -1) {
+    }
+  };
 
-//     if(input === '/quit') {
-//       socket.end('end');
-//     }
-//   });
+  socket.on('data', function(data) {
+    input = data.toString();
+    input = input.slice(0, input.length-2);
 
-//   socket.write(sData + 'Welcome to the GungHo test chat server\n');
-//   socket.write(sData + 'Login Name?\n', function(data) {
-//     input = '' + data;
-//     console.log(input);
-//   });
+    if(commands[input]) {
+      commands[input]();
+    }
 
-// }).listen(port);
+    if(loginStatus) {
+      postMessage(input);
+    } else {
+      login(input);
+    }
+    socket.write(cData);
+  });
 
-// conn.on('connection', function(){
-//   console.log('Connection :: ready');
-// });
+  socket.write(sData + 'Welcome to the GungHo test chat server\n');
+  socket.write(sData + 'currently ' + users.length + ' users online\n');
+  login();
+  socket.write(cData);
+  console.log('Connection :: ready');
+});
+
+conn.on('close', function() {
+  console.log('Connection :: close');
+});
+
+conn.on('error', function(err) {
+  console.log('Connection :: error: ' + err);
+});
 
