@@ -12,49 +12,107 @@ app.listen(PORT, function(){
   console.log('listening to port: ' + PORT);
 });
 
+
 /**
-* TCP
+* TCP Server
 */
-var users = [];
+var PORT2 = 3001;
+
+// Temporary implementation of data storage
+var users = {'terry': {username: 'terry', loggedIn: false, socket: null}};
+var userCount = 0;
 var rooms = [];
+var messages = [];
 
+// 
 var conn = net.createServer(function(){
-  
-}).listen(3001);
+  console.log('TCP server listening to port: ' + PORT2);
+}).listen(PORT2);
 
+// Handle user connections
 conn.on('connection', function(socket){
-  var user = {};
+  // current user account for connection
+  var user = {username: 'anonymous', loggedIn: false, socket: socket};
+  // server/client sending data
   var sData = '\r<= ';
   var cData = '\r=> ';
-  var loginStatus = false;
+  // user commands
   var commands = {
-    '/quit': function() {
-      socket.end('end');
+    '/info': function(socket) {
+      socket.write();
+    },
+    'join': function() {
+
+    },
+    '/leave': function(socket) {
+
+    },
+    '/reg': function(socket) {
+
+    },
+    '/rooms': function(socket) {
+
+    },
+    '/quit': function(socket) {
+      socket.write(sData);
+      socket.write('BYE\n\n', function(){
+        socket.end();
+      });
+      if(user.loggedIn) {
+        userCount--;
+      }
     }
   };
   var login = function(input) {
     socket.write(sData);
-    if(input) {
-      socket.write('Invalid login name - Please enter a login name\n');
+    console.log(users[input]);
+    if(users[input] === undefined) {
+      socket.write('Invalid login name - create a new user?(y/n)\n');
+      
+      socket.once('data', function(data) {
+        var input = getInput(data).toLowerCase();
+        
+        if(input === 'y') {
+          socket.write('Please enter a name: \n');
+          socket.once('data', function(data) {
+            var input2 = getInput(data);
+            console.log(input2);
+            socket.write('User succesful created!\n');
+            users[input2] = {username: input2, loggedIn: true, socket: socket};
+            user = users[input2];
+            userCount++;
+          });
+        } else if (input === 'n') {
+          
+        }
+        console.log('y/n');
+      });
+
     } else {
-      socket.write('Login Name?\n');
+      userCount++;
+      socket.write('Succesful login!\n');
+      users[input] = {username: input, loggedIn: true, socket: socket};
+      user = users[input];
     }
   };
   var postMessage = function(input) {
-
-    if(input.indexOf('/quit') > -1) {
-    }
+    console.log(users);
   };
-
-  socket.on('data', function(data) {
+  var getInput = function(data) {
     input = data.toString();
     input = input.slice(0, input.length-2);
 
+    return input;
+  };
+
+  socket.on('data', function(data) {
+    var input = getInput(data);
+
     if(commands[input]) {
-      commands[input]();
+      commands[input](socket);
     }
 
-    if(loginStatus) {
+    if(user.loggedIn) {
       postMessage(input);
     } else {
       login(input);
@@ -63,8 +121,8 @@ conn.on('connection', function(socket){
   });
 
   socket.write(sData + 'Welcome to the GungHo test chat server\n');
-  socket.write(sData + 'currently ' + users.length + ' users online\n');
-  login();
+  socket.write(sData + 'currently ' + userCount + (userCount === 1? ' user' : ' users') + ' online\n');
+  socket.write(sData + 'Login Name?\n');
   socket.write(cData);
   console.log('Connection :: ready');
 });
