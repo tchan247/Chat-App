@@ -5,7 +5,15 @@ var rooms = require('./db/room/room');
 
 var commands = {
   '/info': function(session) {
-    session.user.socket.write();
+    var socket = session.socket;
+    var user = session.user;
+    socket.write(protocol.sData + '\n');
+    socket.write(protocol.sData + '------------- INFO -------------'+ '\n');
+    session.socket.write(protocol.sData + 'USER: ' + user.username + '\n');
+    session.socket.write(protocol.sData + 'STATUS: ' + user.status + '\n');
+    session.socket.write(protocol.sData + 'ROOM: ' + (user.room !== undefined? user.room : ' * none *') + '\n');
+    socket.write(protocol.sData + '--------------------------------'+ '\n');
+    socket.write(protocol.sData + '\n');
   },
   '/join': function(session) {
     var socket = session.socket;
@@ -35,6 +43,7 @@ var commands = {
         }
         socket.write(protocol.sData + room.joinMessage + '\n');
         user.room = input;
+        user.status = 'chatting';
         // instead of just adding users, we need to include user sockets to broadcast messages
         room.members[user.username] = session;
         // broadcast user join event
@@ -55,6 +64,7 @@ var commands = {
       socket.write(protocol.sData + '\n');
       delete rooms[user.room].members[user.username];
       user.room = undefined;
+      user.status = 'idle';
     }
   },
   '/login': function(session, input) {
