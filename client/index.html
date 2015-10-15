@@ -5,6 +5,26 @@
   <link rel='stylesheet' href='css/styles.css'>
 </head>
 <body>
-  <!-- <script src='bundle/bundle.js'></script> -->
+
+  <h1 class='title'> Very Cool Chat App </h1>
+  
+  <div class='chat-container'>
+    <div class='rooms'>
+      <p> Rooms </p>
+      <ul></ul>
+    </div>
+    <div class='chat-view'>
+      <div class='messages'>
+        <ul></ul>
+      </div>
+      <div class='chat-input'>
+        <input type='text'>
+        <button onclick='sendMessage()'> Submit </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+  <script src='bundle/bundle.js'></script>
 </body>
 </html>

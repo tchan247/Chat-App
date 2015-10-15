@@ -1,3 +1,4 @@
+// temporary storage for rooms
 var rooms = {
   chat: {
     name: 'chat',

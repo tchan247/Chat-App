@@ -1,0 +1,60 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.title {
+  text-align: center;
+}
+
+.chat-container {
+  width: 980px;
+  height: 500px;
+  margin-top: 50px;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: lightgrey;
+  position: relative;
+}
+
+.rooms {
+  width: 200px;
+  height: 500px;
+  background-color: white;
+  float: left;
+}
+
+.rooms p {
+  text-align: center;
+}
+
+.rooms ul {
+  margin: 0;
+  padding: 0 10px;
+  background-color: white;
+  list-style-type: none;
+  text-align: left;
+}
+
+.chat-view {
+  width: 750px;
+  height: 500px;
+  float: right;
+}
+
+.messages {
+  height: 450px;
+  padding: 10px;
+  background-color: white;
+}
+
+.messages ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.chat-input {
+  padding-top: 15px;
+}

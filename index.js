@@ -1,6 +1,5 @@
 // HTTP modules
 var express = require('express');
-var io = require('socket.io');
 
 // TCP modules
 var net = require('net');
@@ -8,29 +7,41 @@ var protocol = require('./server/protocol');
 var utils = require('./server/utils');
 var commands = require('./server/commands');
 var users = require('./server/db/user/user');
-
+var rooms = require('./server/db/room/room');
 
 /**
 * HTTP Server
 */
 var app = express();
 var PORT = process.env.PORT || 3000;
+var server = app.listen(PORT, function(){
+  console.log('listening to port: ' + PORT);
+});
+var io = require('socket.io').listen(server);
+var ioSocket;
 
 app.use(express.static(__dirname + '/client'));
 
-app.listen(PORT, function(){
-  console.log('listening to port: ' + PORT);
+io.on('connection',function(socket){
+  console.log('socket.io connected');
+  var data = {rooms: rooms, users: users};
+  socket.emit('connected', data);
+  ioSocket = socket;
+
+  socket.on('disconnect', function() {
+    console.log('socket.io: disconnected');
+  });
 });
 
+// sync web client user data
+io.on('ioUserCreated', function(data) {
+  users[data.username] = data;
+});
 
 /**
 * TCP Server
 */
 var PORT2 = 3001;
-
-// Temporary implementation of data storage
-var rooms = [];
-var messages = [];
 
 // start server
 var conn = net.createServer(function(){
@@ -42,6 +53,7 @@ conn.on('connection', function(socket){
   // current user account for connection
   var session = {
     socket: socket,
+    ioSocket: ioSocket,
     user: {
       username: 'anonymous', loggedIn: false, status: 'unregistered'
     }
@@ -62,9 +74,11 @@ conn.on('connection', function(socket){
   });
 
   // connection messages
-  socket.write(protocol.sData + 'Welcome to the GungHo test chat server\n');
+  socket.write(protocol.sData + '\n');
+  socket.write(protocol.sData + 'Welcome to the GungHo test chat server!\n');
   socket.write(protocol.sData + 'currently ' + utils.userCount().online + ' user(s) online\n');
-  socket.write(protocol.sData + 'Login with "/login" - display commands with "/help"?\n');
+  socket.write(protocol.sData + '\n');
+  socket.write(protocol.sData + 'Login with "/login" - display available commands with "/help"\n');
   socket.write(protocol.cData);
   console.log('Connection :: ready');
 });

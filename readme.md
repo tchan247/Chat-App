@@ -30,18 +30,14 @@ Very cool chat app
 
 
 ## Requirements
-node
-npm 
-bower
+- node
+- npm 
 
 
 ## Installation
 
 ```sh
-npm install -g gulp
 npm install
-bower install
-gulp
 npm start
 ```
 
@@ -51,3 +47,6 @@ npm start
 - Configure security groups to open custom port (3001). This may take a while to come into effect.
 
 ## Tech Stack
+Node.js
+Express
+Socket.io
