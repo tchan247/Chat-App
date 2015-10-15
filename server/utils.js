@@ -3,6 +3,7 @@ var users = require('./db/user/user');
 var rooms = require('./db/room/room');
 var utils = {};
 
+// parse input into string without escaped chars
 utils.getInput = function(data) {
   input = data.toString();
   input = input.slice(0, input.length-2);
@@ -10,6 +11,7 @@ utils.getInput = function(data) {
   return input;
 };
 
+// send message to all users
 utils.broadcast = function(room, message) {
   var members = rooms[room].members;
   for(var key in members) {
@@ -20,6 +22,7 @@ utils.broadcast = function(room, message) {
   }
 };
 
+// post a message
 utils.postMessage = function(session, input) {
   var user = session.user;
   console.log(user.room);
@@ -30,6 +33,7 @@ utils.postMessage = function(session, input) {
 
 };
 
+// get users offline and online
 utils.userCount = function() {
   var count = {offline: 0, online: 0};
   for(var user in users) {

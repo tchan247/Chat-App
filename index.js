@@ -33,6 +33,7 @@ io.on('connection',function(socket){
   });
 });
 
+// sync web client user data
 io.on('ioUserCreated', function(data) {
   users[data.username] = data;
 });

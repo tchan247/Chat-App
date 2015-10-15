@@ -3,6 +3,10 @@ body {
   margin: 0;
 }
 
+.title {
+  text-align: center;
+}
+
 .chat-container {
   width: 980px;
   height: 500px;

@@ -47,4 +47,7 @@ npm start
 - Configure security groups to open custom port (3001). This may take a while to come into effect.
 
 ## Tech Stack
+Node.js
+Express
+Socket.io
 

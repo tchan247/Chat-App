@@ -2,6 +2,7 @@ var username = prompt('please enter a name') || 'annonymous';
 var user = {username: username, loggedIn: true, status: 'idle', room: undefined};
 var rooms, users;
 
+// client init
 var io = io();
 io.on('connected', function(data) {
   rooms = data.rooms;
@@ -17,6 +18,7 @@ io.on('message',function(data){
   addMessage(data);
 });
 
+// room switch logic
 var renderRooms = function() {
   var list = document.getElementsByClassName('rooms')[0].children[1];
   var room, el;
@@ -48,15 +50,15 @@ var renderRooms = function() {
 var joinRoom = function(room) {
   user.room = room;
   addMessage('Welcom to the room: ' + room);
-  addMessage('* ' + user.username + ' has joined the room');
+  sendMessage('* ' + user.username + ' has joined the room');
 };
 
 var leaveRoom = function() {
-
   user.room = undefined;
-  addMessage('* ' + user.username + ' has left the room');
+  sendMessage('* ' + user.username + ' has left the room');
 };
 
+// adds message to chat box
 var addMessage = function(message) {
   var list = document.getElementsByClassName('messages')[0].children[0];
   var el = document.createElement('li');
@@ -64,11 +66,13 @@ var addMessage = function(message) {
   list.appendChild(el);
 };
 
+// removes all messages in chat box
 var clearMessages = function() {
   var list = document.getElementsByClassName('messages')[0].children[0];
   list.innerHTML = '';
 };
 
+// send message to all clients
 var sendMessage = function() {
   var message = document.getElementsByClassName('chat-input')[0].children[0].value;
   message = username + ': ' + message;
