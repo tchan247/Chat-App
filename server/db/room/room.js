@@ -2,13 +2,13 @@ var rooms = {
   chat: {
     name: 'chat',
     joinMessage: 'Welcome to the default chatroom!',
-    users: {},
+    members: {},
     messages: []
   },
   hottub: {
     name: 'hottub',
     joinMessage: 'Come chill in the hottub!',
-    users: {},
+    members: {},
     messages: []
   }
 };

@@ -22,7 +22,8 @@ var commands = {
         socket.write(protocol.sData + 'ENTERING ROOM: ' + room.name + ' \n');
         socket.write(protocol.sData + room.joinMessage + '\n');
         user.room = input;
-        room.users[user.username] = user;
+        // instead of just adding users, we need to include user sockets to broadcast messages
+        room.members[user.username] = session;
       } else {
         socket.write(protocol.sData + 'Room does not exist!\n');
       }
@@ -30,20 +31,25 @@ var commands = {
     });
 
   },
-  '/leave': function() {
-
+  '/leave': function(session) {
+    var socket = session.socket;
+    var user = session.user;
+    if(user.room !== undefined) {  
+      socket.write(protocol.sData + 'leaving ' + user.room + '\n');
+      delete rooms[user.room].members[user.username];
+      user.room = undefined;
+    }
   },
   '/login': function(session, input) {
     var socket = session.socket;
-    socket.write(protocol.sData);
-    socket.write('Please provide user or register with "/reg"\n');
+    socket.write(protocol.sData + 'Please provide existing user name or register one with "/reg"\n');
 
     socket.once('data', function(data) {
       var input = utils.getInput(data);
       if(users[input] && users[input].status !== 'unregistered'){
         socket.write(protocol.sData);
         socket.write('Succesful login!\n');
-        users[input] = {username: input, loggedIn: true, socket: socket, status: 'idle', room: 'lobby'};
+        users[input] = {username: input, loggedIn: true, socket: socket, status: 'idle', room: undefined};
         session.user = users[input];
         socket.write(protocol.cData);
       }
@@ -62,11 +68,12 @@ var commands = {
   },
   '/rooms': function(session) {
     var socket = session.socket;
+    var room;
     socket.write(protocol.sData + 'Active rooms are:\n');
     for(var key in rooms) {
-      var room = rooms[key];
+      room = rooms[key];
       socket.write(protocol.sData);
-      socket.write('*' + room.name +' (' + Object.keys(room.users).length + ')\n');
+      socket.write('*' + room.name +' (' + Object.keys(room.members).length + ')\n');
     }
   },
   '/quit': function(session) {

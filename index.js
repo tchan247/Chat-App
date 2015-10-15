@@ -54,10 +54,8 @@ conn.on('connection', function(socket){
     // catch user commands
     if(commands[input]) {
       commands[input](session, input);
-    }
-
-    if(session.user.loggedIn) {
-      utils.postMessage(input);
+    } else if(session.user.loggedIn) {
+      utils.postMessage(session, input);
     }
 
     socket.write(protocol.cData);
