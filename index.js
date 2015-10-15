@@ -40,27 +40,32 @@ var conn = net.createServer(function(){
 // Handle user connections
 conn.on('connection', function(socket){
   // current user account for connection
-  var user = {username: 'anonymous', loggedIn: false, socket: socket};
+  var session = {
+    user: {
+      username: 'anonymous', loggedIn: false, socket: socket, status: 'unregistered'
+    }
+  };
 
   socket.on('data', function(data) {
     var input = utils.getInput(data);
+    console.log(session.user.username);
 
     // catch user commands
     if(commands[input]) {
-      commands[input](user);
+      commands[input](session.user, input, session);
     }
 
-    if(user.loggedIn) {
+    if(session.user.loggedIn) {
       utils.postMessage(input);
-    } else {
-      user = utils.login(user, input);
     }
+
     socket.write(protocol.cData);
   });
 
+  // connection messages
   socket.write(protocol.sData + 'Welcome to the GungHo test chat server\n');
   socket.write(protocol.sData + 'currently ' + utils.userCount().online + ' user(s) online\n');
-  socket.write(protocol.sData + 'Login Name?\n');
+  socket.write(protocol.sData + 'Login with "/login" - display commands with "/help"?\n');
   socket.write(protocol.cData);
   console.log('Connection :: ready');
 });
