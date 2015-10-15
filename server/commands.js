@@ -36,6 +36,7 @@ var commands = {
     var user = session.user;
     if(user.room !== undefined) {  
       socket.write(protocol.sData + 'leaving ' + user.room + '\n');
+      utils.broadcast(user.room, '* ' + user.username + ' has left the room *');
       delete rooms[user.room].members[user.username];
       user.room = undefined;
     }
@@ -79,13 +80,15 @@ var commands = {
   '/quit': function(session) {
     var user = session.user;
     var socket = session.socket;
-    socket.write(protocol.sData);
 
+    // exit any rooms
+    this['/leave'](session);
+    
     if(user.loggedIn) {
       users[user.username].loggedIn = false;
     }
 
-    socket.write('BYE\n\n', function(){
+    socket.write(protocol.sData + 'BYE\n\n', function(){
       socket.end();
     });
   }

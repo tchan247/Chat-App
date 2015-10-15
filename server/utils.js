@@ -10,17 +10,21 @@ utils.getInput = function(data) {
   return input;
 };
 
+utils.broadcast = function(room, message) {
+  var members = rooms[room].members;
+  for(var key in members) {
+    member = members[key];
+    member.socket.write(protocol.sData + message + '\n');
+    member.socket.write(protocol.cData);
+  }
+};
+
 utils.postMessage = function(session, input) {
   var user = session.user;
   console.log(user.room);
   
   if(user.room !== undefined) {
-    var members = rooms[user.room].members;
-    for(var key in members) {
-      member = members[key];
-      member.socket.write(protocol.sData + session.user.username + ': ' + input + '\n');
-      member.socket.write(protocol.cData);
-    }
+    this.broadcast(user.room, session.user.username + ': ' + input);
   }
 
 };
