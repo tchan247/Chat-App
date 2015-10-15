@@ -1,6 +1,5 @@
 // HTTP modules
 var express = require('express');
-var io = require('socket.io');
 
 // TCP modules
 var net = require('net');
@@ -9,19 +8,27 @@ var utils = require('./server/utils');
 var commands = require('./server/commands');
 var users = require('./server/db/user/user');
 
-
 /**
 * HTTP Server
 */
 var app = express();
 var PORT = process.env.PORT || 3000;
+var server = app.listen(PORT, function(){
+  console.log('listening to port: ' + PORT);
+});
+var io = require('socket.io').listen(server);
+var ioSocket;
 
 app.use(express.static(__dirname + '/client'));
 
-app.listen(PORT, function(){
-  console.log('listening to port: ' + PORT);
-});
+io.on('connection',function(socket){
+  console.log('socket.io connected');
+  ioSocket = socket;
 
+  socket.on('disconnect', function() {
+    console.log('socket.io: disconnected');
+  });
+});
 
 /**
 * TCP Server
@@ -42,6 +49,7 @@ conn.on('connection', function(socket){
   // current user account for connection
   var session = {
     socket: socket,
+    ioSocket: ioSocket,
     user: {
       username: 'anonymous', loggedIn: false, status: 'unregistered'
     }
