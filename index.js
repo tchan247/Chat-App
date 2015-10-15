@@ -62,8 +62,10 @@ conn.on('connection', function(socket){
   });
 
   // connection messages
-  socket.write(protocol.sData + 'Welcome to the GungHo test chat server\n');
+  socket.write(protocol.sData + '\n');
+  socket.write(protocol.sData + 'Welcome to the GungHo test chat server!\n');
   socket.write(protocol.sData + 'currently ' + utils.userCount().online + ' user(s) online\n');
+  socket.write(protocol.sData + '\n');
   socket.write(protocol.sData + 'Login with "/login" - display commands with "/help"?\n');
   socket.write(protocol.cData);
   console.log('Connection :: ready');
