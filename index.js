@@ -52,7 +52,7 @@ conn.on('connection', function(socket){
 
     // catch user commands
     if(commands[input]) {
-      commands[input](session.user, input, session);
+      commands[input](session, input);
     }
 
     if(session.user.loggedIn) {

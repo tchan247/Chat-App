@@ -3,17 +3,17 @@ var users = require('./db/user/user');
 var utils = require('./utils');
 
 var commands = {
-  '/info': function(user) {
-    user.socket.write();
+  '/info': function(session) {
+    session.user.socket.write();
   },
   '/join': function() {
 
   },
-  '/leave': function(user) {
+  '/leave': function() {
 
   },
-  '/login': function(user, input, session) {
-    var socket = user.socket;
+  '/login': function(session, input) {
+    var socket = session.user.socket;
     socket.write(protocol.sData);
     socket.write('Please provide user or register with "/reg"\n');
 
@@ -23,28 +23,29 @@ var commands = {
         socket.write(protocol.sData);
         socket.write('Succesful login!\n');
         users[input] = {username: input, loggedIn: true, socket: socket};
-        user = users[input];
+        session.user = users[input];
         socket.write(protocol.cData);
       }
     });
     return user;
   },
-  '/reg': function(user, input, session) {
-    var socket = user.socket;
+  '/reg': function(session, input) {
+    var socket = session.user.socket;
     socket.write(protocol.sData + 'Please enter a name: \n');
-    user.status = 'registering';
+    session.user.status = 'registering';
     socket.once('data', function(data) {
-      var input2 = utils.getInput(data);
+      var input = utils.getInput(data);
       socket.write(protocol.sData + 'User succesfuly created! Please Login with "/login"\n');
-      users[input2] = {username: input2, loggedIn: true, socket: socket, status: 'idle'};
-      session.user = users[input2];
+      users[input] = {username: input, loggedIn: true, socket: socket, status: 'idle'};
+      session.user = users[input];
       socket.write(protocol.cData);
     });
   },
-  '/rooms': function(user) {
+  '/rooms': function(session) {
 
   },
-  '/quit': function(user) {
+  '/quit': function(session) {
+    var user = session.user;
     var socket = user.socket;
     socket.write(protocol.sData);
 
