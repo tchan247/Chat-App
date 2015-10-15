@@ -5,12 +5,21 @@
   <link rel='stylesheet' href='css/styles.css'>
 </head>
 <body>
+  <div class='chat-container'>
+    <div class='rooms'>
+      <p> Rooms </p>
+      <ul></ul>
+    </div>
+    <div class='chat-view'>
+      <div class='messages'>
+        <ul></ul>
+      </div>
+      <div class='chat-input'>
+        
+      </div>
+    </div>
+  </div>
   <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
-  <script>var io = io();
-    io.on('hello',function(){
-      console.log('test');
-    })
-  </script>
-  <!-- <script src='bundle/bundle.js'></script> -->
+  <script src='bundle/bundle.js'></script>
 </body>
 </html>

@@ -1,0 +1,53 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.chat-container {
+  width: 980px;
+  height: 500px;
+  margin-top: 50px;
+  padding: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: lightgrey;
+  position: relative;
+}
+
+.rooms {
+  width: 200px;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.rooms p {
+  text-align: center;
+}
+
+.rooms ul {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  list-style-type: none;
+}
+
+.chat-view {
+
+}
+
+.messages {
+
+  background-color: white;
+}
+
+.messages ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.chat-input {
+  
+}

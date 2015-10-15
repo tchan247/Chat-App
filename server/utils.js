@@ -14,9 +14,9 @@ utils.broadcast = function(room, message) {
   var members = rooms[room].members;
   for(var key in members) {
     member = members[key];
-    console.log(members);
     member.socket.write(protocol.sData + message + '\n');
     member.socket.write(protocol.cData);
+    member.ioSocket.emit('message', message);
   }
 };
 
