@@ -1,12 +1,13 @@
 var protocol = require('./protocol');
-var users = require('./db/user/user');
 var utils = require('./utils');
+var users = require('./db/user/user');
+var rooms = require('./db/room/room');
 
 var commands = {
   '/info': function(session) {
     session.user.socket.write();
   },
-  '/join': function() {
+  '/join': function(session) {
 
   },
   '/leave': function() {
@@ -42,7 +43,12 @@ var commands = {
     });
   },
   '/rooms': function(session) {
-
+    var socket = session.user.socket;
+    for(var key in rooms) {
+      var room = rooms[key];
+      socket.write(protocol.sData);
+      socket.write('*' + room.name +' (' + room.users.length + ')\n');
+    }
   },
   '/quit': function(session) {
     var user = session.user;
