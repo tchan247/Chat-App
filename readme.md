@@ -32,16 +32,12 @@ Very cool chat app
 ## Requirements
 - node
 - npm 
-- bower
 
 
 ## Installation
 
 ```sh
-npm install -g gulp
 npm install
-bower install
-gulp
 npm start
 ```
 

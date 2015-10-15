@@ -16,10 +16,9 @@ body {
 
 .rooms {
   width: 200px;
+  height: 500px;
   background-color: white;
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  float: left;
 }
 
 .rooms p {
@@ -34,11 +33,14 @@ body {
 }
 
 .chat-view {
-
+  width: 750px;
+  height: 500px;
+  float: right;
 }
 
 .messages {
-
+  height: 450px;
+  padding: 10px;
   background-color: white;
 }
 
@@ -49,5 +51,5 @@ body {
 }
 
 .chat-input {
-  
+  padding-top: 15px;
 }

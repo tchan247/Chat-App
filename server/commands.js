@@ -125,6 +125,7 @@ var commands = {
       socket.write(protocol.sData + 'User succesfuly created! Please Login with "/login"\n');
       users[input] = {username: input, loggedIn: true, status: 'offline', room: undefined};
       socket.write(protocol.cData);
+      session.ioSocket.emit('userCreated', users[input]);
     });
   },
   '/rooms': function(session) {

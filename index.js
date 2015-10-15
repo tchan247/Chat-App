@@ -7,6 +7,7 @@ var protocol = require('./server/protocol');
 var utils = require('./server/utils');
 var commands = require('./server/commands');
 var users = require('./server/db/user/user');
+var rooms = require('./server/db/room/room');
 
 /**
 * HTTP Server
@@ -23,6 +24,8 @@ app.use(express.static(__dirname + '/client'));
 
 io.on('connection',function(socket){
   console.log('socket.io connected');
+  var data = {rooms: rooms, users: users};
+  socket.emit('connected', data);
   ioSocket = socket;
 
   socket.on('disconnect', function() {
@@ -30,14 +33,14 @@ io.on('connection',function(socket){
   });
 });
 
+io.on('ioUserCreated', function(data) {
+  users[data.username] = data;
+});
+
 /**
 * TCP Server
 */
 var PORT2 = 3001;
-
-// Temporary implementation of data storage
-var rooms = [];
-var messages = [];
 
 // start server
 var conn = net.createServer(function(){
