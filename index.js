@@ -41,8 +41,9 @@ var conn = net.createServer(function(){
 conn.on('connection', function(socket){
   // current user account for connection
   var session = {
+    socket: socket,
     user: {
-      username: 'anonymous', loggedIn: false, socket: socket, status: 'unregistered'
+      username: 'anonymous', loggedIn: false, status: 'unregistered'
     }
   };
 
