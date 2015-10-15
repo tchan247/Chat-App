@@ -4,6 +4,21 @@ var users = require('./db/user/user');
 var rooms = require('./db/room/room');
 
 var commands = {
+  '/help': function(session) {
+    var socket = session.socket;
+    socket.write(protocol.sData + '\n');
+    socket.write(protocol.sData + '------------- HELP -------------'+ '\n');
+    socket.write(protocol.sData + '/help: Displays available commands\n');
+    socket.write(protocol.sData + '/info: Displays information about the user\n');
+    socket.write(protocol.sData + '/join: Allows the user to join a room\n');
+    socket.write(protocol.sData + '/leave: User leaves room if currently in one\n');
+    socket.write(protocol.sData + '/login: Allows user to login with a username\n');
+    socket.write(protocol.sData + '/quit: Closes the current session\n');
+    socket.write(protocol.sData + '/reg: Allows the user to register a new user with a username\n');
+    socket.write(protocol.sData + '/rooms: displays currently available rooms. /join command also uses this feature\n');
+    socket.write(protocol.sData + '--------------------------------'+ '\n');
+    socket.write(protocol.sData + '\n');
+  },
   '/info': function(session) {
     var socket = session.socket;
     var user = session.user;
@@ -11,7 +26,7 @@ var commands = {
     socket.write(protocol.sData + '------------- INFO -------------'+ '\n');
     session.socket.write(protocol.sData + 'USER: ' + user.username + '\n');
     session.socket.write(protocol.sData + 'STATUS: ' + user.status + '\n');
-    session.socket.write(protocol.sData + 'ROOM: ' + (user.room !== undefined? user.room : ' * none *') + '\n');
+    session.socket.write(protocol.sData + 'ROOM: ' + (user.room !== undefined? user.room : '* none *') + '\n');
     socket.write(protocol.sData + '--------------------------------'+ '\n');
     socket.write(protocol.sData + '\n');
   },
@@ -84,6 +99,21 @@ var commands = {
       }
     });
   },
+  '/quit': function(session) {
+    var user = session.user;
+    var socket = session.socket;
+
+    // exit any rooms
+    this['/leave'](session);
+    
+    if(user.loggedIn) {
+      users[user.username].loggedIn = false;
+    }
+
+    socket.write(protocol.sData + 'BYE\n\n', function(){
+      socket.end();
+    });
+  },
   '/reg': function(session, input) {
     var socket = session.socket;
     socket.write(protocol.sData + '\n');
@@ -106,21 +136,6 @@ var commands = {
       socket.write(protocol.sData);
       socket.write('*' + room.name +' (' + Object.keys(room.members).length + ')\n');
     }
-  },
-  '/quit': function(session) {
-    var user = session.user;
-    var socket = session.socket;
-
-    // exit any rooms
-    this['/leave'](session);
-    
-    if(user.loggedIn) {
-      users[user.username].loggedIn = false;
-    }
-
-    socket.write(protocol.sData + 'BYE\n\n', function(){
-      socket.end();
-    });
   }
 };
 
