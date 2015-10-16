@@ -12,6 +12,7 @@ utils.getInput = function(data) {
 
 utils.broadcast = function(room, message) {
   var members = rooms[room].members;
+  var member;
   for(var key in members) {
     member = members[key];
     console.log(members);
@@ -41,6 +42,21 @@ utils.userCount = function() {
   }
 
   return count;
+};
+
+/**
+* Write messages to a socket
+* @param {Object} socket - Socket to write to
+* @param {String|String[]} messages - Message or list of messages to write in order
+*/
+utils.write = function(socket, messages) {
+  if(typeof messages === 'string') {
+    socket.write(protocol.sData + messages + '\n');
+  } else if (Array.isArray(messages)) {
+    for(var i = 0, len = messages.length; i < len; i++) {
+      socket.write(protocol.sData + messages[i] + '\n');
+    }
+  }
 };
 
 module.exports = utils;
