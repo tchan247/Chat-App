@@ -28,6 +28,8 @@ io.on('connection',function(socket){
   socket.emit('connected', data);
   ioSocket = socket;
 
+  console.log(socket.handshake.url);
+
   socket.on('disconnect', function() {
     console.log('socket.io: disconnected');
   });
@@ -74,11 +76,14 @@ conn.on('connection', function(socket){
   });
 
   // connection messages
-  socket.write(protocol.sData + '\n');
-  socket.write(protocol.sData + 'Welcome to the GungHo test chat server!\n');
-  socket.write(protocol.sData + 'currently ' + utils.userCount().online + ' user(s) online\n');
-  socket.write(protocol.sData + '\n');
-  socket.write(protocol.sData + 'Login with "/login" - display available commands with "/help"\n');
+  utils.write(socket, [
+    '', 
+    'Welcome to the GungHo test chat server!',
+    'currently ' + utils.userCount().online + ' user(s) online',
+    '',
+    'Login with "/login" - display available commands with "/help"'
+  ]);
+
   socket.write(protocol.cData);
   console.log('Connection :: ready');
 });
