@@ -1,6 +1,8 @@
 var protocol = require('./protocol');
-var users = require('./db/user/user');
-var rooms = require('./db/room/room');
+var user = require('./db/user/user');
+var users = require('./db/user/users');
+var rooms = require('./db/room/rooms');
+
 var utils = {};
 
 // parse input into string without escaped chars
@@ -21,6 +23,12 @@ utils.broadcast = function(room, message) {
     member.socket.write(protocol.cData);
     member.ioSocket.emit('message', message);
   }
+};
+
+// create a user
+utils.createUser = function(name) {
+  var newUser = new user({username: name});
+  users[name] = newUser;
 };
 
 // post a message

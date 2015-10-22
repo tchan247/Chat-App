@@ -1,7 +1,8 @@
+var _ = require('lodash/object');
 var protocol = require('./protocol');
 var utils = require('./utils');
-var users = require('./db/user/user');
-var rooms = require('./db/room/room');
+var users = require('./db/user/users');
+var rooms = require('./db/room/rooms');
 
 var commands = {
   '/help': function(session) {
@@ -110,7 +111,7 @@ var commands = {
       var input = utils.getInput(data);
       if(users[input] && users[input].status !== 'unregistered'){
         utils.write(socket, ['', 'Succesful login!', 'Join a room by typing /join']);
-        users[input] = {username: input, loggedIn: true, socket: socket, status: 'idle', room: undefined};
+        _.extend(users[input], {loggedIn: true, status: 'idle'});
         session.user = users[input];
         socket.write(protocol.cData);
       }
@@ -140,7 +141,7 @@ var commands = {
     socket.once('data', function(data) {
       var input = utils.getInput(data);
       utils.write(socket, ['', 'User succesfuly created! Please Login with "/login"']);
-      users[input] = {username: input, loggedIn: true, status: 'offline', room: undefined};
+      utils.createUser(input);
       socket.write(protocol.cData);
       session.ioSocket.emit('userCreated', users[input]);
     });
