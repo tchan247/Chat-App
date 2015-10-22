@@ -1,6 +1,6 @@
 var protocol = require('./protocol');
-var users = require('./db/user/user');
-var rooms = require('./db/room/room');
+var users = require('./db/user/users');
+var rooms = require('./db/room/rooms');
 var utils = {};
 
 utils.getInput = function(data) {

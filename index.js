@@ -6,7 +6,8 @@ var net = require('net');
 var protocol = require('./server/protocol');
 var utils = require('./server/utils');
 var commands = require('./server/commands');
-var users = require('./server/db/user/user');
+var users = require('./server/db/user/users');
+var rooms = require('./server/db/room/rooms');
 
 /**
 * HTTP Server
@@ -51,7 +52,7 @@ conn.on('connection', function(socket){
   // current user account for connection
   var session = {
     socket: socket,
-    ioSocket: ioSocket,
+    ioSocket: ioSocket || {emit: function(){}}, // create fake socket if no socket.io connection
     user: {
       username: 'anonymous', loggedIn: false, status: 'unregistered'
     }

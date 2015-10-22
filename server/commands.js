@@ -1,7 +1,8 @@
 var protocol = require('./protocol');
 var utils = require('./utils');
-var users = require('./db/user/user');
-var rooms = require('./db/room/room');
+var user = require('./db/user/user');
+var users = require('./db/user/users');
+var rooms = require('./db/room/rooms');
 
 var commands = {
   '/help': function(session) {
