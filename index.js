@@ -60,7 +60,6 @@ conn.on('connection', function(socket){
 
   socket.on('data', function(data) {
     var input = utils.getInput(data);
-    console.log(session.user.username);
 
     // catch user commands
     if(commands[input]) {

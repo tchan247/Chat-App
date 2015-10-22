@@ -1,6 +1,8 @@
 var protocol = require('./protocol');
+var user = require('./db/user/user');
 var users = require('./db/user/users');
 var rooms = require('./db/room/rooms');
+
 var utils = {};
 
 utils.getInput = function(data) {
@@ -15,10 +17,14 @@ utils.broadcast = function(room, message) {
   var member;
   for(var key in members) {
     member = members[key];
-    console.log(members);
     member.socket.write(protocol.sData + message + '\n');
     member.socket.write(protocol.cData);
   }
+};
+
+utils.createUser = function(name) {
+  var newUser = new user({username: name});
+  users[name] = newUser;
 };
 
 utils.postMessage = function(session, input) {
